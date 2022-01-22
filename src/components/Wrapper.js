@@ -5,8 +5,18 @@ import { Link } from "react-router-dom";
 function Wrapper(props) {
   return (
     <div>
-      <Link to="/">Home</Link>
-      <Link to="/adding-groceies">Add Groceries</Link>
+      <div>
+        <Link style={{ margin: "5px" }} className="px-2" to="/">
+          Home
+        </Link>
+        <Link style={{ margin: "5px" }} to="/adding-groceries">
+          Add Groceries
+        </Link>
+        <Link style={{ margin: "5px" }} to="/groceries">
+          Add Groceries
+        </Link>
+      </div>
+
       {props.children}
     </div>
   );

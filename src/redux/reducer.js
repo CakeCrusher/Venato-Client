@@ -1,6 +1,18 @@
 const initialState = {
   currentUser: {},
-  groceryItems: [{ name: "egg" }],
+  groceryItems: [
+    {
+      id: Math.random(),
+      name: "apple",
+      amt_g: 100,
+    },
+    {
+      id: Math.random(),
+      name: "pear",
+      amt_g: 100,
+    },
+  ],
+  itemSelecting: [],
 };
 
 function reducer(state = initialState, action) {
@@ -15,6 +27,39 @@ function reducer(state = initialState, action) {
         ...state,
         groceryItems: [...state.groceryItems, action.payload],
       };
+    case "SET_G_ITEMS":
+      return {
+        ...state,
+        groceryItems: action.payload,
+      };
+    case "SELECT_ITEM":
+      return {
+        ...state,
+        itemSelecting: [...state.itemSelecting, action.payload],
+      };
+    case "REMOVE_ITEM":
+      return {
+        ...state,
+        itemSelecting: state.itemSelecting.filter(
+          (item) => item.id !== action.payload.id
+        ),
+      };
+    case "EDIT_SELECTED_ITEM":
+      return {
+        ...state,
+        itemSelecting: state.itemSelecting.map((item) => {
+          if (item.id === action.payload.id) {
+            return action.payload;
+          }
+          return item;
+        }),
+      };
+    case "RESET_SELECTED_ITEMS":
+      return {
+        ...state,
+        itemSelecting: [],
+      };
+
     default:
       return state;
   }

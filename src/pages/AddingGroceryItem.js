@@ -14,7 +14,9 @@ const AddGroceryItem = (props) => {
   const handleSubmitItem = (e) => {
     // FETCH ADD GROCERY ITEM
     const groceryItem = {
+      id: Math.random(),
       name: "apple",
+      amt_g: 100,
     };
     props.addGroceryItem(groceryItem);
   };
@@ -24,12 +26,12 @@ const AddGroceryItem = (props) => {
       <button onClick={handleSubmitItem}>add</button>
       <ul>
         {recommendations.map((item) => (
-          <li>{item}</li>
+          <li key={item}>{item}</li>
         ))}
       </ul>
       <ul>
         {props.groceryItems.map((item) => (
-          <li>{item.name}</li>
+          <li key={item.id}>{item.name}</li>
         ))}
       </ul>
     </Wrapper>
