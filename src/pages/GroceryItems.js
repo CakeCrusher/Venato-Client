@@ -31,8 +31,6 @@ const GroceryItem = (props) => {
     ]);
   };
 
-  console.log("props.meals", props.meals);
-
   return (
     <Wrapper>
       <h1>Groceries</h1>
@@ -54,7 +52,6 @@ const mapStateToProps = (state) => {
   return {
     groceryItems: state.groceryItems,
     itemSelecting: state.itemSelecting,
-    meals: state.meals,
   };
 };
 const mapDispatchToProps = (dispatch) => {

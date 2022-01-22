@@ -13,7 +13,22 @@ const initialState = {
     },
   ],
   itemSelecting: [],
-  meals: [],
+  meals: [
+    {
+      id: Math.random(),
+      name: "breakfast",
+      calories: 100,
+    },
+    {
+      id: Math.random(),
+      name: "dinner",
+      calories: 200,
+    },
+  ],
+  dailyConsumption: [
+    { id: Math.random(), name: "1/1", calories: 300 },
+    { id: 1, name: "1/22", calories: 400 },
+  ],
 };
 
 function reducer(state = initialState, action) {
@@ -71,6 +86,28 @@ function reducer(state = initialState, action) {
         ...state,
         meals: [...state.meals, action.payload],
       };
+    case "REMOVE_MEAL":
+      return {
+        ...state,
+        meals: state.meals.filter((meal) => meal.id !== action.payload.id),
+      };
+    case "SET_DC_INSTANCE":
+      if (state.dailyConsumption.find((d) => d.id === action.payload.id)) {
+        return {
+          ...state,
+          dailyConsumption: state.dailyConsumption.map((d) => {
+            if (d.id === action.payload.id) {
+              return action.payload;
+            }
+            return d;
+          }),
+        };
+      } else {
+        return {
+          ...state,
+          dailyConsumption: [...state.dailyConsumption, action.payload],
+        };
+      }
 
     default:
       return state;
