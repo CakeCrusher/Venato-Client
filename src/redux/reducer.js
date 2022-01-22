@@ -13,6 +13,7 @@ const initialState = {
     },
   ],
   itemSelecting: [],
+  meals: [],
 };
 
 function reducer(state = initialState, action) {
@@ -58,6 +59,17 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         itemSelecting: [],
+      };
+
+    case "SET_MEALS":
+      return {
+        ...state,
+        meals: action.payload,
+      };
+    case "ADD_MEAL":
+      return {
+        ...state,
+        meals: [...state.meals, action.payload],
       };
 
     default:

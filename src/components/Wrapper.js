@@ -15,6 +15,9 @@ function Wrapper(props) {
         <Link style={{ margin: "5px" }} to="/groceries">
           Add Groceries
         </Link>
+        <Link style={{ margin: "5px" }} to="/health-analysis">
+          Health Analysis
+        </Link>
       </div>
 
       {props.children}

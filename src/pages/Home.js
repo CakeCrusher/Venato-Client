@@ -20,6 +20,7 @@ function Home(props) {
   };
   return (
     <Wrapper>
+      <h1>Home</h1>
       <input
         type="text"
         placeholder="username"

@@ -22,6 +22,7 @@ const AddGroceryItem = (props) => {
   };
   return (
     <Wrapper>
+      <h1>Add Groceries</h1>
       <input type="text" value={groceryItem} onChange={handleItemChange} />
       <button onClick={handleSubmitItem}>add</button>
       <ul>
