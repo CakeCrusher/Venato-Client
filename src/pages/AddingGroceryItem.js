@@ -70,18 +70,19 @@ const AddGroceryItem = (props) => {
       .catch((err) => console.error(err));
   };
 
-  const handleSearchInput = debounce((evt) => {
+  const handleSearchInput = (evt) => {
     const search = evt.target.value;
     const input = search.toLowerCase();
 
     if (input.length > 0) {
       searchGroceries([input])
         .then((res) => {
+          console.log(res);
           setRecommendations(res.data.msg);
         })
         .catch((err) => console.error(err));
     }
-  }, 250);
+  };
 
   const handleUnitInput = (value) => {
     setUnitInput(value);

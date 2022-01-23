@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { VStack, Checkbox } from "@chakra-ui/react";
+import { VStack, Checkbox, Text } from "@chakra-ui/react";
 import { connect } from "react-redux";
 import UnitInput from "./UnitInput";
 
@@ -32,11 +32,12 @@ const GrocerySelect = (props) => {
     setAmt(value);
   };
   return (
-    <VStack>
+    <VStack alignItems="flex-start">
       {/* create  a checkbox input with an onchange that toggles marked */}
       <Checkbox alignSelf="flex-start" onChange={handleMarked}>
         {item.name}
       </Checkbox>
+      <Text>Total: {props.item.amount_g} grams</Text>
       <UnitInput
         className={marked ? "" : "hidden"}
         handleUnitInput={handleUnitInput}
