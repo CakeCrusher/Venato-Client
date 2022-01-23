@@ -8,6 +8,7 @@ import {
   Input,
   Spacer,
   VStack,
+  Text,
 } from "@chakra-ui/react";
 import { PieChart, Pie } from "recharts";
 import { getGroceries, getPrediction } from "../../utils/api";
@@ -45,11 +46,11 @@ const App = (props) => {
   return (
     <VStack>
       <Heading>Obesity Analysis</Heading>
-      <div>
+      <Text fontSize="lg">
         Based on your <stromg>{props.groceryItems.length} grocery items</stromg>{" "}
         our AI has predicted youhave a{" "}
         <strong>{parseInt(props.obesityPercentage)}%</strong> of becoming obese.
-      </div>
+      </Text>
     </VStack>
   );
 };

@@ -7,6 +7,12 @@ import {
   Heading,
   HStack,
   Input,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
   Spacer,
   VStack,
 } from "@chakra-ui/react";
@@ -59,19 +65,30 @@ const DailyConsumption = (props) => {
   return (
     <VStack>
       <Heading>Daily Consumption</Heading>
-      {groupedDailyConsumption.map((dc) => (
-        <div key={dc[0].id}>
-          <button
-            onClick={() => {
-              setDailyMealData(
-                dailyMealData && dailyMealData[0].id === dc[0].id ? null : dc
-              );
-            }}
-          >
-            {dc[0].name || "Untitled"}
-          </button>
-        </div>
-      ))}
+      <Table>
+        <Tbody>
+          {groupedDailyConsumption.map((dc) => (
+            <Tr key={dc[0].id}>
+              <Td
+                textAlign={"center"}
+                _hover={{
+                  cursor: "pointer",
+                  backgroundColor: "#dfdfdf",
+                }}
+                onClick={() => {
+                  setDailyMealData(
+                    dailyMealData && dailyMealData[0].id === dc[0].id
+                      ? null
+                      : dc
+                  );
+                }}
+              >
+                {dc[0].name || "Untitled"}
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
       {dailyMealData && (
         <div>
           <h3>

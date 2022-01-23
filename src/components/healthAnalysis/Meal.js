@@ -4,6 +4,7 @@ import {
   Button,
   Container,
   Heading,
+  HStack,
   Table,
   Tbody,
   Td,
@@ -24,9 +25,11 @@ import {
   Area,
 } from "recharts";
 import { consume } from "../../utils/api";
+import ChartFilters from "../ChartFilters";
 
 const App = (props) => {
   const [mealData, setMealData] = useState(null);
+  const [chartFilters, setChartFilters] = useState([]);
 
   const handleConsumption = () => {
     // FETCH CONSUME
@@ -55,14 +58,18 @@ const App = (props) => {
       groupedMeals[meal.id] = meal;
     }
   });
+  const colors = ["#155263", "#ffad5a", "#4f9da6", "#1a0841", "#17b978"];
+  const data = [];
+  if (mealData) {
+    chartFilters.forEach((filter) => {
+      data.push({ name: filter, nutrients: mealData[filter] });
+    });
+  }
 
-  const data = [{ name: "a", pv: 10, uv: 5 }];
-
+  console.log("mealData", mealData);
   const handleMealClick = (meal_id, name) => {
     const int = parseInt(meal_id);
-    consume(props.currentUser.id, int, name).then((res) => {
-      console.log(res);
-    });
+    setMealData(groupedMeals[int]);
   };
 
   return (
@@ -78,6 +85,7 @@ const App = (props) => {
         <Tbody>
           {Object.keys(groupedMeals).map((id) => {
             const meal = groupedMeals[id];
+            console.log("meal", meal);
             return (
               <Tr key={id}>
                 <Td
@@ -102,14 +110,30 @@ const App = (props) => {
           })}
         </Tbody>
       </Table>
+      <HStack>
+        <ChartFilters
+          name="calories"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+        <ChartFilters
+          name="cholesterol"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+        <ChartFilters
+          name="protein"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+      </HStack>
       <BarChart width={300} height={250} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="pv" fill="#8884d8" />
-        <Bar dataKey="uv" fill="#82ca9d" />
+        <Bar dataKey="nutrients" fill="#8884d8" />
       </BarChart>
       {mealData && (
         <div>
