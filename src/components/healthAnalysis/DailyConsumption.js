@@ -17,6 +17,8 @@ import {
   Tooltip,
   Legend,
   Bar,
+  AreaChart,
+  Area,
 } from "recharts";
 
 const App = (props) => {
@@ -24,7 +26,12 @@ const App = (props) => {
 
   console.log("props.dailyConsumption", props.dailyConsumption);
 
-  const data = [{ name: "a", pv: 10, uv: 5 }];
+  const data = [
+    { name: "a", pv: 10, uv: 5 },
+    { name: "b", pv: 5, uv: 10 },
+    { name: "c", pv: 5, uv: 10 },
+  ];
+
   return (
     <VStack>
       <Heading>Daily Consumption</Heading>
@@ -46,15 +53,42 @@ const App = (props) => {
           <h3>calories: {dailyMealData.calories}</h3>
         </div>
       )}
-      <BarChart width={300} height={250} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+
+      <AreaChart
+        width={730}
+        height={250}
+        data={data}
+        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+      >
+        <defs>
+          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+          </linearGradient>
+        </defs>
         <XAxis dataKey="name" />
         <YAxis />
+        <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
-        <Legend />
-        <Bar dataKey="pv" fill="#8884d8" />
-        <Bar dataKey="uv" fill="#82ca9d" />
-      </BarChart>
+        <Area
+          type="monotone"
+          dataKey="uv"
+          stroke="#8884d8"
+          fillOpacity={1}
+          fill="url(#colorUv)"
+        />
+        <Area
+          type="monotone"
+          dataKey="pv"
+          stroke="#82ca9d"
+          fillOpacity={1}
+          fill="url(#colorPv)"
+        />
+      </AreaChart>
       <h2>Historical health</h2>
 
       <div>Show line graph based on daily consumption</div>

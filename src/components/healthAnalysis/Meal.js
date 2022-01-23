@@ -20,6 +20,8 @@ import {
   Tooltip,
   Legend,
   Bar,
+  AreaChart,
+  Area,
 } from "recharts";
 
 const App = (props) => {
@@ -63,7 +65,7 @@ const App = (props) => {
           ))}
         </Tbody>
       </Table>
-      <BarChart width={600} height={250} data={data}>
+      <BarChart width={300} height={250} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />

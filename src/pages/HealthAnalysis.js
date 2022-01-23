@@ -24,7 +24,7 @@ const HealthAnalysis = (props) => {
   useEffect(() => {
     getMeals(props.userId).then((res) => {
       if (res.data) {
-        setMealData(res.data.msg);
+        // setMealData(res.data.msg);
         setLoading(false);
       }
     });
