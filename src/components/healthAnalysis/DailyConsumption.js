@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   Button,
+  Checkbox,
   Container,
   Heading,
   HStack,
   Input,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
   Spacer,
   VStack,
 } from "@chakra-ui/react";
@@ -20,40 +27,95 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import ChartFilters from "../ChartFilters";
 
-const App = (props) => {
+const DailyConsumption = (props) => {
   const [dailyMealData, setDailyMealData] = useState(null);
+  const [chartFilters, setChartFilters] = useState([]);
+
+  const colors = ["#155263", "#ffad5a", "#4f9da6", "#1a0841", "#17b978"];
 
   console.log("props.dailyConsumption", props.dailyConsumption);
 
-  const data = [
-    { name: "a", pv: 10, uv: 5 },
-    { name: "b", pv: 5, uv: 10 },
-    { name: "c", pv: 5, uv: 10 },
-  ];
+  const dates = props.dailyConsumption.map((dc) => dc.date);
+  const uniqueDates = dates.filter((x, i, a) => a.indexOf(x) === i);
+  const groupedDailyConsumption = uniqueDates.map((date) =>
+    props.dailyConsumption.filter((dc) => dc.date === date)
+  );
+  // dailyMealData.reduce function that adds up the total calories for each meal
+
+  console.log("chartFilters", chartFilters);
+  console.log("groupedDailyConsumption", groupedDailyConsumption);
+
+  // const data = [
+  //   { name: "a", calories: 10, uv: 5 },
+  //   { name: "b", calories: 5, uv: 10 },
+  //   { name: "c", calories: 5, uv: 10 },
+  // ];
+  const data = dailyMealData
+    ? dailyMealData.map((dc, idx) => {
+        let dataBit = { name: idx };
+        chartFilters.forEach((filter) => {
+          dataBit[filter] = dc[filter];
+        });
+        return dataBit;
+      })
+    : [];
 
   return (
     <VStack>
       <Heading>Daily Consumption</Heading>
-      {props.dailyConsumption.map((dc) => (
-        <div key={dc.id}>
-          <button
-            onClick={() => {
-              setDailyMealData(
-                dailyMealData && dailyMealData.id === dc.id ? null : dc
-              );
-            }}
-          >
-            {dc.name}
-          </button>
-        </div>
-      ))}
+      <Table>
+        <Tbody>
+          {groupedDailyConsumption.map((dc) => (
+            <Tr key={dc[0].id}>
+              <Td
+                textAlign={"center"}
+                _hover={{
+                  cursor: "pointer",
+                  backgroundColor: "#dfdfdf",
+                }}
+                onClick={() => {
+                  setDailyMealData(
+                    dailyMealData && dailyMealData[0].id === dc[0].id
+                      ? null
+                      : dc
+                  );
+                }}
+              >
+                {dc[0].name || "Untitled"}
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
       {dailyMealData && (
         <div>
-          <h3>calories: {dailyMealData.calories}</h3>
+          <h3>
+            calories:
+            {dailyMealData.reduce((acc, cur) => {
+              return acc + cur.calories;
+            }, 0)}
+          </h3>
         </div>
       )}
-
+      <HStack>
+        <ChartFilters
+          name="calories"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+        <ChartFilters
+          name="cholesterol"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+        <ChartFilters
+          name="protein"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+      </HStack>
       <AreaChart
         width={730}
         height={250}
@@ -74,20 +136,16 @@ const App = (props) => {
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
-        <Area
-          type="monotone"
-          dataKey="uv"
-          stroke="#8884d8"
-          fillOpacity={1}
-          fill="url(#colorUv)"
-        />
-        <Area
-          type="monotone"
-          dataKey="pv"
-          stroke="#82ca9d"
-          fillOpacity={1}
-          fill="url(#colorPv)"
-        />
+        {chartFilters.map((filter, idx) => (
+          <Area
+            key={filter}
+            type="monotone"
+            dataKey={filter}
+            stroke={colors[idx]}
+            fillOpacity={1}
+            fill="url(#colorUv)"
+          />
+        ))}
       </AreaChart>
       <h2>Historical health</h2>
 
@@ -110,4 +168,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(DailyConsumption);

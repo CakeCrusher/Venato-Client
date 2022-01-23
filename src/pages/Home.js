@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import Wrapper from "../components/Wrapper";
 
-import { createUser, getDailyConsumption, getUser } from "../utils/api";
+import {
+  createUser,
+  getDailyConsumption,
+  getMeals,
+  getUser,
+} from "../utils/api";
 import {
   Button,
   Container,
@@ -13,6 +18,7 @@ import {
   Spacer,
   VStack,
 } from "@chakra-ui/react";
+import { lastWeek, today, tomrrow } from "../utils/tools";
 
 function Home(props) {
   const [username, setUsername] = useState("Martin");
@@ -26,42 +32,42 @@ function Home(props) {
     const lastWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 7
+      today.getDate() - 7,
     )
       .toISOString()
       .slice(0, 10);
     const tomrrow = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 1
+      today.getDate() + 1,
     )
       .toISOString()
       .slice(0, 10);
+    console.log("lastWeek", lastWeek, lastWeek);
+    console.log("tomrrow", tomrrow, lastWeek);
+
     try {
       if (register) {
         const { data } = await createUser(username, password);
-        const dc = await getDailyConsumption(
-          data.msg.user_id,
-          lastWeek,
-          tomrrow
-        );
-        props.setDc(dc.data.msg);
-
-        const { user_id } = data.msg;
-
-        props.login({
-          id: user_id,
-        });
-        return;
       }
 
       const { data } = await getUser(username, password);
+      props.login({ ...data.msg, id: data.msg.user_id });
       const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
-      console.log("dc", dc);
-      const { user_id } = data.msg;
-      props.login({
-        id: user_id,
-      });
+      console.log(dc);
+      if (typeof dc.data.msg === "string") {
+        props.setDc([]);
+      } else {
+        props.setDc(dc.data.msg);
+      }
+
+      const meals = await getMeals(data.msg.user_id);
+      if (typeof meals.data.msg === "string") {
+        props.setMeals([]);
+      } else {
+        props.setMeals(meals.data.msg);
+      }
+
       navigate("/adding-groceries");
     } catch (err) {
       console.error(err);
@@ -72,8 +78,8 @@ function Home(props) {
 
   return (
     <Container>
-      <HStack justifyContent="center">
-        <Heading>Home</Heading>
+      <HStack mt="24" justifyContent="center">
+        <Heading>Venato</Heading>
       </HStack>
       <VStack mt="8" minW="100%" justifyContent="center">
         <Input
@@ -101,8 +107,6 @@ function Home(props) {
           Register
         </Button>
       </VStack>
-
-      <p>user: {props.currentUser.id}</p>
     </Container>
   );
 }
@@ -120,6 +124,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setDc: (obj) => {
       dispatch({ type: "SET_DC", payload: obj });
+    },
+    setMeals: (meals) => {
+      dispatch({ type: "SET_MEALS", payload: meals });
     },
   };
 };

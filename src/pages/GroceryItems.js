@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { connect } from "react-redux";
 import GrocerySelect from "../components/GrocerySelect";
-import { createMeal, getGroceries } from "../utils/api";
+import { createMeal, getGroceries, getMeals } from "../utils/api";
 
 const GroceryItem = (props) => {
   const [mealName, setMealName] = useState("");
@@ -40,9 +40,15 @@ const GroceryItem = (props) => {
       };
     });
 
-    createMeal(props.userId, mealName, selected).then((res) => {
-      console.log(res);
-    });
+    try {
+      const mealStub = await createMeal(props.userId, mealName, selected);
+      const newMeal = await getMeals(props.userId);
+      console.log(newMeal);
+
+      //props.addMean(newMeal)
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleInput = (evt) => {

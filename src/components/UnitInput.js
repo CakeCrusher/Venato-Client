@@ -29,9 +29,8 @@ const UnitInput = (props) => {
   const handleUnitSelect = (value) => {
     if (props.passUnitSelect) {
       props.passUnitSelect(value);
-    } else {
-      setSelectedUnit(value);
     }
+    setSelectedUnit(value);
   };
 
   return (

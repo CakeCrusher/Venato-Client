@@ -32,6 +32,7 @@ const initialState = {
     //    { id: Math.random(), name: "1/1", calories: 300 },
     //    { id: 1, name: "1/22", calories: 400 },
   ],
+  obesityPercentage: null,
 };
 
 function reducer(state = initialState, action) {
@@ -115,6 +116,11 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         dailyConsumption: action.payload,
+      };
+    case "SET_OBESITY_PERCENTAGE":
+      return {
+        ...state,
+        obesityPercentage: action.payload,
       };
 
     default:
