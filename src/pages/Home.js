@@ -78,8 +78,8 @@ function Home(props) {
 
   return (
     <Container>
-      <HStack justifyContent="center">
-        <Heading>Home</Heading>
+      <HStack mt="24" justifyContent="center">
+        <Heading>Venato</Heading>
       </HStack>
       <VStack mt="8" minW="100%" justifyContent="center">
         <Input
@@ -107,8 +107,6 @@ function Home(props) {
           Register
         </Button>
       </VStack>
-
-      <p>user: {props.currentUser.id}</p>
     </Container>
   );
 }
