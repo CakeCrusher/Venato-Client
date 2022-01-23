@@ -31,20 +31,30 @@ const DailyConsumption = (props) => {
 
   console.log("props.dailyConsumption", props.dailyConsumption);
 
-  const ids = props.dailyConsumption.map((dc) => dc.id);
-  const uniqueIds = ids.filter((x, i, a) => a.indexOf(x) === i);
-  const groupedDailyConsumption = uniqueIds.map((id) =>
-    props.dailyConsumption.filter((dc) => dc.id === id)
+  const dates = props.dailyConsumption.map((dc) => dc.date);
+  const uniqueDates = dates.filter((x, i, a) => a.indexOf(x) === i);
+  const groupedDailyConsumption = uniqueDates.map((date) =>
+    props.dailyConsumption.filter((dc) => dc.date === date)
   );
   // dailyMealData.reduce function that adds up the total calories for each meal
+
   console.log("chartFilters", chartFilters);
   console.log("groupedDailyConsumption", groupedDailyConsumption);
 
-  const data = [
-    { name: "a", pv: 10, uv: 5 },
-    { name: "b", pv: 5, uv: 10 },
-    { name: "c", pv: 5, uv: 10 },
-  ];
+  // const data = [
+  //   { name: "a", calories: 10, uv: 5 },
+  //   { name: "b", calories: 5, uv: 10 },
+  //   { name: "c", calories: 5, uv: 10 },
+  // ];
+  const data = dailyMealData
+    ? dailyMealData.map((dc, idx) => {
+        let dataBit = { name: idx };
+        chartFilters.forEach((filter) => {
+          dataBit[filter] = dc[filter];
+        });
+        return dataBit;
+      })
+    : [];
 
   return (
     <VStack>
@@ -111,6 +121,7 @@ const DailyConsumption = (props) => {
         <Tooltip />
         {chartFilters.map((filter, idx) => (
           <Area
+            key={filter}
             type="monotone"
             dataKey={filter}
             stroke={colors[idx]}
@@ -118,14 +129,6 @@ const DailyConsumption = (props) => {
             fill="url(#colorUv)"
           />
         ))}
-
-        <Area
-          type="monotone"
-          dataKey="pv"
-          stroke="#82ca9d"
-          fillOpacity={1}
-          fill="url(#colorPv)"
-        />
       </AreaChart>
       <h2>Historical health</h2>
 
