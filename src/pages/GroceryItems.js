@@ -71,7 +71,7 @@ const GroceryItem = (props) => {
 
   return (
     <Container>
-      <VStack>
+      <VStack mt="8">
         <HStack>
           <Heading size="lg">Your Groceries</Heading>
         </HStack>

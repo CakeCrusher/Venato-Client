@@ -94,7 +94,7 @@ const AddGroceryItem = (props) => {
 
   return (
     <Container>
-      <FormControl>
+      <FormControl mt="8">
         <HStack>
           <InputGroup>
             <InputLeftAddon>
