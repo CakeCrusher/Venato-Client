@@ -37,7 +37,6 @@ const GrocerySelect = (props) => {
       <Checkbox alignSelf="flex-start" onChange={handleMarked}>
         {item.name}
       </Checkbox>
-      <Text>Total: {props.item.amount_g} grams</Text>
       <UnitInput
         className={marked ? "" : "hidden"}
         handleUnitInput={handleUnitInput}

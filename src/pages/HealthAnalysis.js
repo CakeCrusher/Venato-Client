@@ -48,7 +48,6 @@ const HealthAnalysis = (props) => {
     <Container>
       <Heading>Health Analysis</Heading>
       {/* <ObesityAnalysis /> */}
-      <Meal />
       <DailyConsumption />
     </Container>
   );

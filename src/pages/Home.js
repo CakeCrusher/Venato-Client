@@ -32,14 +32,14 @@ function Home(props) {
     const lastWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 7
+      today.getDate() - 7,
     )
       .toISOString()
       .slice(0, 10);
     const tomrrow = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 1
+      today.getDate() + 1,
     )
       .toISOString()
       .slice(0, 10);
@@ -54,6 +54,7 @@ function Home(props) {
       const { data } = await getUser(username, password);
       props.login({ ...data.msg, id: data.msg.user_id });
       const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
+      console.log(dc);
       if (typeof dc.data.msg === "string") {
         props.setDc([]);
       } else {
