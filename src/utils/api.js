@@ -43,4 +43,8 @@ export function getMeals(user_id) {
 
 export function consume(user_id, meal_id) {}
 
-export function getDailyConsumption(user_id) {}
+export function getDailyConsumption(user_id, start_date, end_date) {
+  return axios.get(`${url}/meal`, {
+    params: { user_id, start_date, end_date },
+  });
+}
