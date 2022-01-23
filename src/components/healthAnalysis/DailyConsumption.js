@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   Button,
+  Checkbox,
   Container,
   Heading,
   HStack,
@@ -20,17 +21,15 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import ChartFilters from "../ChartFilters";
 
-const App = (props) => {
+const DailyConsumption = (props) => {
   const [dailyMealData, setDailyMealData] = useState(null);
+  const [chartFilters, setChartFilters] = useState([]);
+
+  const colors = ["#155263", "#ffad5a", "#4f9da6", "#1a0841", "#17b978"];
 
   console.log("props.dailyConsumption", props.dailyConsumption);
-
-  const data = [
-    { name: "a", pv: 10, uv: 5 },
-    { name: "b", pv: 5, uv: 10 },
-    { name: "c", pv: 5, uv: 10 },
-  ];
 
   const ids = props.dailyConsumption.map((dc) => dc.id);
   const uniqueIds = ids.filter((x, i, a) => a.indexOf(x) === i);
@@ -38,13 +37,20 @@ const App = (props) => {
     props.dailyConsumption.filter((dc) => dc.id === id)
   );
   // dailyMealData.reduce function that adds up the total calories for each meal
-
+  console.log("chartFilters", chartFilters);
   console.log("groupedDailyConsumption", groupedDailyConsumption);
+
+  const data = [
+    { name: "a", pv: 10, uv: 5 },
+    { name: "b", pv: 5, uv: 10 },
+    { name: "c", pv: 5, uv: 10 },
+  ];
+
   return (
     <VStack>
       <Heading>Daily Consumption</Heading>
       {groupedDailyConsumption.map((dc) => (
-        <div key={dc.id}>
+        <div key={dc[0].id}>
           <button
             onClick={() => {
               setDailyMealData(
@@ -59,14 +65,30 @@ const App = (props) => {
       {dailyMealData && (
         <div>
           <h3>
-            calories:{" "}
+            calories:
             {dailyMealData.reduce((acc, cur) => {
               return acc + cur.calories;
             }, 0)}
           </h3>
         </div>
       )}
-
+      <HStack>
+        <ChartFilters
+          name="calories"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+        <ChartFilters
+          name="cholesterol"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+        <ChartFilters
+          name="protein"
+          _state={chartFilters}
+          _setState={setChartFilters}
+        />
+      </HStack>
       <AreaChart
         width={730}
         height={250}
@@ -87,13 +109,16 @@ const App = (props) => {
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
-        <Area
-          type="monotone"
-          dataKey="uv"
-          stroke="#8884d8"
-          fillOpacity={1}
-          fill="url(#colorUv)"
-        />
+        {chartFilters.map((filter, idx) => (
+          <Area
+            type="monotone"
+            dataKey={filter}
+            stroke={colors[idx]}
+            fillOpacity={1}
+            fill="url(#colorUv)"
+          />
+        ))}
+
         <Area
           type="monotone"
           dataKey="pv"
@@ -123,4 +148,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(DailyConsumption);

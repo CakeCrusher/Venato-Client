@@ -18,6 +18,7 @@ import {
   Spacer,
   VStack,
 } from "@chakra-ui/react";
+import { lastWeek, today, tomrrow } from "../utils/tools";
 
 function Home(props) {
   const [username, setUsername] = useState("Martin");
@@ -44,12 +45,14 @@ function Home(props) {
       .slice(0, 10);
     console.log("lastWeek", lastWeek, lastWeek);
     console.log("tomrrow", tomrrow, lastWeek);
+    
     try {
       if (register) {
         const { data } = await createUser(username, password);
       }
 
       const { data } = await getUser(username, password);
+      props.login({ ...data.msg, id: data.msg.user_id });
       const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
       if (typeof dc.data.msg === "string") {
         props.setDc([]);
