@@ -43,14 +43,47 @@ const App = (props) => {
   if (!props.obesityPercentage) {
     return <div>Loading...</div>;
   }
+  const myOP = parseInt(props.obesityPercentage);
   return (
     <VStack>
       <Heading>Obesity Analysis</Heading>
-      <Text fontSize="lg">
-        Based on your <stromg>{props.groceryItems.length} grocery items</stromg>{" "}
-        our AI has predicted youhave a{" "}
-        <strong>{parseInt(props.obesityPercentage)}%</strong> of becoming obese.
-      </Text>
+      <HStack>
+        <PieChart width={200} height={250}>
+          <Pie
+            data={[
+              { name: "My %", value: myOP },
+              { name: "rest", value: 100 - myOP },
+            ]}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={40}
+            fill="#8884d8"
+          />
+          <Pie
+            data={[
+              { name: "US%", value: 42 },
+              { name: "rest", value: 100 - 42 },
+            ]}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={80}
+            fill="#82ca9d"
+            label
+          />
+        </PieChart>
+        <Text fontSize="lg">
+          Based on your{" "}
+          <strong>{props.groceryItems.length} grocery items</strong> our AI has
+          predicted youhave a{" "}
+          <strong>{parseInt(props.obesityPercentage)}%</strong> of becoming
+          obese.
+        </Text>
+      </HStack>
     </VStack>
   );
 };
