@@ -35,6 +35,13 @@ const App = (props) => {
     props.setDailyConsumptionInstance(dailyConsumption);
   };
 
+  // group by meals
+  const ids = props.meals.map((meal) => meal.id);
+  const uniqueIds = ids.filter((x, i, a) => a.indexOf(x) === i);
+  const groupedMeals = uniqueIds.map((id) =>
+    props.meals.filter((meal) => meal.id === id)
+  );
+
   const data = [{ name: "a", pv: 10, uv: 5 }];
 
   return (
@@ -95,6 +102,7 @@ const mapDispatchToProps = (dispatch) => {
     removeMeal: (meal) => {
       dispatch({ type: "REMOVE_MEAL", payload: meal });
     },
+
     setDailyConsumptionInstance: (dc) => {
       dispatch({ type: "SET_DC_INSTANCE", payload: dc });
     },

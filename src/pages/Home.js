@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import Wrapper from "../components/Wrapper";
 
-import { createUser, getDailyConsumption, getUser } from "../utils/api";
+import {
+  createUser,
+  getDailyConsumption,
+  getMeals,
+  getUser,
+} from "../utils/api";
 import {
   Button,
   Container,
@@ -26,7 +31,7 @@ function Home(props) {
     const lastWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 7
+      today.getDate() - 7
     )
       .toISOString()
       .slice(0, 10);
@@ -37,27 +42,18 @@ function Home(props) {
     )
       .toISOString()
       .slice(0, 10);
+    console.log("lastWeek", lastWeek, lastWeek);
+    console.log("tomrrow", tomrrow, lastWeek);
     try {
       if (register) {
         const { data } = await createUser(username, password);
-        const dc = await getDailyConsumption(
-          data.msg.user_id,
-          lastWeek,
-          tomrrow
-        );
-        props.setDc(dc.data.msg);
-
-        const { user_id } = data.msg;
-
-        props.login({
-          id: user_id,
-        });
-        return;
       }
 
       const { data } = await getUser(username, password);
       const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
-      console.log("dc", dc);
+      props.setDc(dc.data.msg);
+      const meals = await getMeals(data.msg.user_id);
+      props.setMeals(meals.data.msg);
       const { user_id } = data.msg;
       props.login({
         id: user_id,
@@ -120,6 +116,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setDc: (obj) => {
       dispatch({ type: "SET_DC", payload: obj });
+    },
+    setMeals: (meals) => {
+      dispatch({ type: "SET_MEALS", payload: meals });
     },
   };
 };

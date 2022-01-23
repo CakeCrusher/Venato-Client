@@ -48,3 +48,7 @@ export function getDailyConsumption(user_id, start_date, end_date) {
     params: { user_id, start_date, end_date },
   });
 }
+
+export function getPrediction(groceries) {
+  return axios.post(`http://sv.tangyisheng2.com:8080/health`, { groceries });
+}

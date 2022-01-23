@@ -32,25 +32,38 @@ const App = (props) => {
     { name: "c", pv: 5, uv: 10 },
   ];
 
+  const ids = props.dailyConsumption.map((dc) => dc.id);
+  const uniqueIds = ids.filter((x, i, a) => a.indexOf(x) === i);
+  const groupedDailyConsumption = uniqueIds.map((id) =>
+    props.dailyConsumption.filter((dc) => dc.id === id)
+  );
+  // dailyMealData.reduce function that adds up the total calories for each meal
+
+  console.log("groupedDailyConsumption", groupedDailyConsumption);
   return (
     <VStack>
       <Heading>Daily Consumption</Heading>
-      {props.dailyConsumption.map((dc) => (
+      {groupedDailyConsumption.map((dc) => (
         <div key={dc.id}>
           <button
             onClick={() => {
               setDailyMealData(
-                dailyMealData && dailyMealData.id === dc.id ? null : dc
+                dailyMealData && dailyMealData[0].id === dc[0].id ? null : dc
               );
             }}
           >
-            {dc.name}
+            {dc[0].name || "Untitled"}
           </button>
         </div>
       ))}
       {dailyMealData && (
         <div>
-          <h3>calories: {dailyMealData.calories}</h3>
+          <h3>
+            calories:{" "}
+            {dailyMealData.reduce((acc, cur) => {
+              return acc + cur.calories;
+            }, 0)}
+          </h3>
         </div>
       )}
 
