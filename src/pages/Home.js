@@ -18,6 +18,7 @@ import {
   Spacer,
   VStack,
 } from "@chakra-ui/react";
+import { lastWeek, today, tomrrow } from "../utils/tools";
 
 function Home(props) {
   const [username, setUsername] = useState("Martin");
@@ -27,37 +28,17 @@ function Home(props) {
 
   // Becareful not to pass in event parameter (event) => {}
   const handleLogin = async (register = false) => {
-    const today = new Date();
-    const lastWeek = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - 7
-    )
-      .toISOString()
-      .slice(0, 10);
-    const tomrrow = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 1
-    )
-      .toISOString()
-      .slice(0, 10);
-    console.log("lastWeek", lastWeek, lastWeek);
-    console.log("tomrrow", tomrrow, lastWeek);
     try {
       if (register) {
         const { data } = await createUser(username, password);
       }
 
       const { data } = await getUser(username, password);
+      props.login({ ...data.msg, id: data.msg.user_id });
       const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
       props.setDc(dc.data.msg);
       const meals = await getMeals(data.msg.user_id);
       props.setMeals(meals.data.msg);
-      const { user_id } = data.msg;
-      props.login({
-        id: user_id,
-      });
       navigate("/adding-groceries");
     } catch (err) {
       console.error(err);
