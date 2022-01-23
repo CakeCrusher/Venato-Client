@@ -41,7 +41,9 @@ export function getMeals(user_id) {
   return axios.post(`${url}/user/meals`, { user_id });
 }
 
-export function consume(user_id, meal_id) {}
+export function consume(user_id, meal_id, name) {
+  return axios.post(`${url}/user/consumption`, { user_id, meal_id, name });
+}
 
 export function getDailyConsumption(user_id, start_date, end_date) {
   return axios.get(`${url}/meal`, {

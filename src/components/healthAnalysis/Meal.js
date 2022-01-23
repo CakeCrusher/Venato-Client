@@ -38,15 +38,31 @@ const App = (props) => {
 
   // group by meals
   const ids = props.meals.map((meal) => meal.id);
-  const uniqueIds = ids.filter((x, i, a) => a.indexOf(x) === i);
-  const groupedMeals = uniqueIds.map((id) =>
-    props.meals.filter((meal) => meal.id === id),
-  );
+  const groupedMeals = {};
+  props.meals.forEach((meal) => {
+    if (groupedMeals[meal.id]) {
+      groupedMeals[meal.id].calories += meal.calories;
+      groupedMeals[meal.id].protein += meal.protein;
+      groupedMeals[meal.id].sodium += meal.sodium;
+      groupedMeals[meal.id].total_fat += meal.total_fat;
+      groupedMeals[meal.id].potassium += meal.potassium;
+      groupedMeals[meal.id].sugar += meal.sugar;
+      groupedMeals[meal.id].caffeine += meal.caffeine;
+      groupedMeals[meal.id].fiber += meal.fiber;
+      groupedMeals[meal.id].alcohol += meal.alcohol;
+      groupedMeals[meal.id].water += meal.water;
+    } else {
+      groupedMeals[meal.id] = meal;
+    }
+  });
 
   const data = [{ name: "a", pv: 10, uv: 5 }];
 
-  const handleMealClick = (meal_id) => {
-    consume(props.currentUser.id, meal_id).then((res) => console.log(res));
+  const handleMealClick = (meal_id, name) => {
+    const int = parseInt(meal_id);
+    consume(props.currentUser.id, int, name).then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -60,24 +76,30 @@ const App = (props) => {
           </Tr>
         </Thead>
         <Tbody>
-          {props.meals.map((meal) => (
-            <Tr key={meal.id}>
-              <Td
-                textAlign="center"
-                _hover={{
-                  cursor: "pointer",
-                  backgroundColor: "#dfdfdf",
-                }}
-                onClick={() => {
-                  setMealData(
-                    mealData && mealData.id === meal.id ? null : meal,
-                  );
-                }}
-              >
-                {meal.name}
-              </Td>
-            </Tr>
-          ))}
+          {Object.keys(groupedMeals).map((id) => {
+            const meal = groupedMeals[id];
+            return (
+              <Tr key={id}>
+                <Td
+                  textAlign="center"
+                  _hover={{
+                    cursor: "pointer",
+                    backgroundColor: "#dfdfdf",
+                  }}
+                  onHover={() => {
+                    setMealData(
+                      mealData && mealData.id === meal.id ? null : meal
+                    );
+                  }}
+                  onClick={() => {
+                    handleMealClick(id, meal.name);
+                  }}
+                >
+                  {meal.name}
+                </Td>
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
       <BarChart width={300} height={250} data={data}>
@@ -101,6 +123,7 @@ const App = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    grocery: state.groceryItems,
     currentUser: state.currentUser,
     meals: state.meals,
   };
