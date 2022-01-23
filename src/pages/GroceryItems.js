@@ -1,50 +1,108 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Container,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  Table,
+  Tbody,
+  Tr,
+  Td,
+  VStack,
+  HStack,
+} from "@chakra-ui/react";
 import { connect } from "react-redux";
 import GrocerySelect from "../components/GrocerySelect";
-import Wrapper from "../components/Wrapper";
+import { createMeal, getGroceries } from "../utils/api";
 
 const GroceryItem = (props) => {
   const [mealName, setMealName] = useState("");
+  // Filter should not exclude selected items
+  const [filter, setFilter] = useState("");
+
   useEffect(() => {
-    console.log("props.selectedItems", props.itemSelecting);
+    getGroceries(props.userId)
+      .then((res) => {
+        if (res.data) {
+          props.setGroceryItems(res.data.msg);
+        }
+      })
+      .catch((err) => console.error(err));
   }, [props.itemSelecting]);
 
   const handleCreateDailyMeal = async () => {
-    const ids = props.itemSelecting.map((item) => item.id);
-    const amts = props.itemSelecting.map((item) => item.amt_used_g);
-    // FETCH CREATE MEAL
-    const meal = {
-      name: mealName
-        ? mealName
-        : props.itemSelecting.map((i) => i.name).join(", "),
-      calories: 100,
-    };
-    props.resetSelectedItems();
-    props.addMeal(meal);
-    // FETCH UPDATED GROCERY ITEMS
-    props.setGroceryItems([
-      {
-        id: Math.random(),
-        name: "chips",
-        amt_g: 50,
-      },
-    ]);
+    const selected = props.itemSelecting.map((item) => {
+      console.log(item);
+      return {
+        nutrition_id: item.nutrition_id,
+        amount_g: item.amt_used_g,
+      };
+    });
+
+    createMeal(props.userId, mealName, selected).then((res) => {
+      console.log(res);
+    });
   };
 
+  const handleInput = (evt) => {
+    const { value } = evt.target;
+    setFilter(value);
+  };
+
+  const filteredItems = useMemo(() => {
+    if (filter !== "") {
+      return props.groceryItems.filter((item) => {
+        const inSelected = props.itemSelecting.some(
+          (e) => e.name === item.name,
+        );
+        const inFilter = item.name.includes(filter);
+        return inSelected || inFilter;
+      });
+    }
+    return props.groceryItems;
+  }, [props.groceryItems, props.itemSelecting, filter]);
+
   return (
-    <Wrapper>
-      <h1>Groceries</h1>
-      {props.groceryItems.map((item) => (
-        <GrocerySelect item={item} key={item.id} />
-      ))}
-      <input
-        type="text"
-        placeholder={"Meal name"}
-        value={mealName}
-        onChange={(e) => setMealName(e.target.value)}
-      />
-      <button onClick={handleCreateDailyMeal}>Make daily meal</button>
-    </Wrapper>
+    <Container>
+      <VStack>
+        <HStack>
+          <Heading size="lg">Your Groceries</Heading>
+        </HStack>
+
+        <HStack>
+          <InputGroup>
+            <InputLeftAddon children="Filter" />
+            <Input id="filter-input" onChange={handleInput} />
+          </InputGroup>
+        </HStack>
+
+        <HStack minW="80%">
+          <Table>
+            <Tbody>
+              {filteredItems.map((item) => {
+                return (
+                  <Tr key={item.id}>
+                    <Td>
+                      <GrocerySelect item={item} />
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </HStack>
+        <HStack>
+          <input
+            type="text"
+            placeholder={"Meal name"}
+            value={mealName}
+            onChange={(e) => setMealName(e.target.value)}
+          />
+          <button onClick={handleCreateDailyMeal}>Make daily meal</button>
+        </HStack>
+      </VStack>
+    </Container>
   );
 };
 
@@ -52,6 +110,7 @@ const mapStateToProps = (state) => {
   return {
     groceryItems: state.groceryItems,
     itemSelecting: state.itemSelecting,
+    userId: state.currentUser.id,
   };
 };
 const mapDispatchToProps = (dispatch) => {

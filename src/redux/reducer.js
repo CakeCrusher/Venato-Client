@@ -1,33 +1,36 @@
 const initialState = {
-  currentUser: {},
+  currentUser: {
+    id: 3,
+    username: "Martin",
+  },
   groceryItems: [
-    {
-      id: Math.random(),
-      name: "apple",
-      amt_g: 100,
-    },
-    {
-      id: Math.random(),
-      name: "pear",
-      amt_g: 100,
-    },
+    //    {
+    //      id: Math.random(),
+    //      name: "apple",
+    //      amt_g: 100,
+    //    },
+    //    {
+    //      id: Math.random(),
+    //      name: "pear",
+    //      amt_g: 100,
+    //    },
   ],
   itemSelecting: [],
   meals: [
-    {
-      id: Math.random(),
-      name: "breakfast",
-      calories: 100,
-    },
-    {
-      id: Math.random(),
-      name: "dinner",
-      calories: 200,
-    },
+    //    {
+    //      id: Math.random(),
+    //      name: "breakfast",
+    //      calories: 100,
+    //    },
+    //    {
+    //      id: Math.random(),
+    //      name: "dinner",
+    //      calories: 200,
+    //    },
   ],
   dailyConsumption: [
-    { id: Math.random(), name: "1/1", calories: 300 },
-    { id: 1, name: "1/22", calories: 400 },
+    //    { id: Math.random(), name: "1/1", calories: 300 },
+    //    { id: 1, name: "1/22", calories: 400 },
   ],
 };
 
@@ -57,7 +60,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         itemSelecting: state.itemSelecting.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item.id !== action.payload.id,
         ),
       };
     case "EDIT_SELECTED_ITEM":

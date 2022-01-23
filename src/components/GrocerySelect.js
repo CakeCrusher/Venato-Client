@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { VStack, Checkbox } from "@chakra-ui/react";
 import { connect } from "react-redux";
+import UnitInput from "./UnitInput";
 
 const GrocerySelect = (props) => {
   const [marked, setMarked] = useState(false);
@@ -10,6 +12,7 @@ const GrocerySelect = (props) => {
       amt_used_g: amt,
     });
   }, [amt]);
+
   const item = {
     ...props.item,
     amt_used_g: amt,
@@ -23,19 +26,22 @@ const GrocerySelect = (props) => {
     }
     setMarked(willBe);
   };
+
+  const handleUnitInput = (value) => {
+    console.log(value);
+    setAmt(value);
+  };
   return (
-    <div>
+    <VStack>
       {/* create  a checkbox input with an onchange that toggles marked */}
-      <input type="checkbox" checked={marked} onChange={handleMarked} />
-      <button className="btn btn-primary">{item.name}</button>
-      <div className={marked ? "" : "hidden"}>
-        <input
-          type="text"
-          value={amt}
-          onChange={(e) => setAmt(e.target.value)}
-        />
-      </div>
-    </div>
+      <Checkbox alignSelf="flex-start" onChange={handleMarked}>
+        {item.name}
+      </Checkbox>
+      <UnitInput
+        className={marked ? "" : "hidden"}
+        handleUnitInput={handleUnitInput}
+      />
+    </VStack>
   );
 };
 

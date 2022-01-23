@@ -6,10 +6,13 @@ import "./App.css";
 import AddingGroceryItem from "./pages/AddingGroceryItem";
 import GroceryItems from "./pages/GroceryItems";
 import HealthAnalysis from "./pages/HealthAnalysis";
+import HealthChart from "./pages/HealthChart";
+import Wrapper from "./components/Wrapper";
 
 function App(props) {
   return (
     <Router>
+      <Wrapper />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/adding-groceries" element={<AddingGroceryItem />} />

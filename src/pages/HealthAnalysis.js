@@ -2,10 +2,32 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Wrapper from "../components/Wrapper";
 import BarChart from "react-bar-chart";
+import {
+  Button,
+  Container,
+  Heading,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
+import { getMeals } from "../utils/api";
 
 const HealthAnalysis = (props) => {
   const [mealData, setMealData] = useState(null);
   const [dailyMealData, setDailyMealData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMeals(props.userId).then((res) => {
+      if (res.data) {
+        setMealData(res.data.msg);
+        setLoading(false);
+      }
+    });
+  }, []);
 
   const handleConsumption = () => {
     // FETCH CONSUME
@@ -16,20 +38,34 @@ const HealthAnalysis = (props) => {
   };
 
   return (
-    <Wrapper>
-      <h1>Health Analysis</h1>
-      <h2>Meals</h2>
-      {props.meals.map((meal) => (
-        <div key={meal.id}>
-          <button
-            onClick={() => {
-              setMealData(mealData && mealData.id === meal.id ? null : meal);
-            }}
-          >
-            {meal.name}
-          </button>
-        </div>
-      ))}
+    <Container>
+      <Heading>Health Analysis</Heading>
+      <Table minH="20rem">
+        <Thead>
+          <Tr>
+            <Th fontSize="xl">Meals</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {props.meals.map((meal) => (
+            <Tr key={meal.id}>
+              <Td
+                _hover={{
+                  cursor: "pointer",
+                  backgroundColor: "#dfdfdf",
+                }}
+                onClick={() => {
+                  setMealData(
+                    mealData && mealData.id === meal.id ? null : meal,
+                  );
+                }}
+              >
+                {meal.name}
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
       {mealData && (
         <div>
           <h3>calories: {mealData.calories}</h3>
@@ -37,13 +73,13 @@ const HealthAnalysis = (props) => {
         </div>
       )}
 
-      <h2>Daily Consumption</h2>
+      <Heading>Daily Consumption</Heading>
       {props.dailyConsumption.map((dc) => (
         <div key={dc.id}>
           <button
             onClick={() => {
               setDailyMealData(
-                dailyMealData && dailyMealData.id === dc.id ? null : dc
+                dailyMealData && dailyMealData.id === dc.id ? null : dc,
               );
             }}
           >
@@ -57,8 +93,9 @@ const HealthAnalysis = (props) => {
         </div>
       )}
       <h2>Historical health</h2>
+
       <div>Show line graph based on daily consumption</div>
-    </Wrapper>
+    </Container>
   );
 };
 
@@ -66,6 +103,7 @@ const mapStateToProps = (state) => {
   return {
     meals: state.meals,
     dailyConsumption: state.dailyConsumption,
+    userId: state.currentUser.id,
   };
 };
 const mapDispatchToProps = (dispatch) => {
