@@ -130,7 +130,8 @@ const AddGroceryItem = (props) => {
                     disabled={!(unitInput > 0)}
                     isLoading={nutrition.loading}
                   >
-                    {nutrition.added ? "Added" : "Add"} {unitInput}
+                    {nutrition.added ? "Added" : "Add"}{" "}
+                    {unitInput / converter[selectedUnit].ratio}
                     {converter[selectedUnit].short}
                   </Button>
                 </Td>

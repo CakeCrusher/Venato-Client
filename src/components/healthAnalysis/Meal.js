@@ -23,6 +23,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import { consume } from "../../utils/api";
 
 const App = (props) => {
   const [mealData, setMealData] = useState(null);
@@ -39,30 +40,37 @@ const App = (props) => {
   const ids = props.meals.map((meal) => meal.id);
   const uniqueIds = ids.filter((x, i, a) => a.indexOf(x) === i);
   const groupedMeals = uniqueIds.map((id) =>
-    props.meals.filter((meal) => meal.id === id)
+    props.meals.filter((meal) => meal.id === id),
   );
 
   const data = [{ name: "a", pv: 10, uv: 5 }];
+
+  const handleMealClick = (meal_id) => {
+    consume(props.currentUser.id, meal_id).then((res) => console.log(res));
+  };
 
   return (
     <VStack>
       <Table minH="20rem">
         <Thead>
           <Tr>
-            <Th fontSize="xl">Meals</Th>
+            <Th fontSize="xl" textAlign="center">
+              Meals
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
           {props.meals.map((meal) => (
             <Tr key={meal.id}>
               <Td
+                textAlign="center"
                 _hover={{
                   cursor: "pointer",
                   backgroundColor: "#dfdfdf",
                 }}
                 onClick={() => {
                   setMealData(
-                    mealData && mealData.id === meal.id ? null : meal
+                    mealData && mealData.id === meal.id ? null : meal,
                   );
                 }}
               >

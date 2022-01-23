@@ -59,8 +59,9 @@ function Home(props) {
       } else {
         props.setDc(dc.data.msg);
       }
+
       const meals = await getMeals(data.msg.user_id);
-      if (typeof dc.data.msg === "string") {
+      if (typeof meals.data.msg === "string") {
         props.setMeals([]);
       } else {
         props.setMeals(meals.data.msg);
