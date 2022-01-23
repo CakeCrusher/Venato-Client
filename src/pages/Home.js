@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import Wrapper from "../components/Wrapper";
 
-import { createUser, getUser } from "../utils/api";
+import { createUser, getDailyConsumption, getUser } from "../utils/api";
 import {
   Button,
   Container,
@@ -15,16 +15,38 @@ import {
 } from "@chakra-ui/react";
 
 function Home(props) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("Martin");
+  const [password, setPassword] = useState("password");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   // Becareful not to pass in event parameter (event) => {}
   const handleLogin = async (register = false) => {
+    const today = new Date();
+    const lastWeek = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 7
+    )
+      .toISOString()
+      .slice(0, 10);
+    const tomrrow = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    )
+      .toISOString()
+      .slice(0, 10);
     try {
       if (register) {
         const { data } = await createUser(username, password);
+        const dc = await getDailyConsumption(
+          data.msg.user_id,
+          lastWeek,
+          tomrrow
+        );
+        props.setDc(dc.data.msg);
+
         const { user_id } = data.msg;
 
         props.login({
@@ -34,7 +56,8 @@ function Home(props) {
       }
 
       const { data } = await getUser(username, password);
-      console.log(data);
+      const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
+      console.log("dc", dc);
       const { user_id } = data.msg;
       props.login({
         id: user_id,
@@ -87,12 +110,16 @@ function Home(props) {
 const mapStateToProps = (state) => {
   return {
     currentUser: state.currentUser,
+    dailyConsumption: state.dailyConsumption,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (obj) => {
       dispatch({ type: "LOGIN", payload: obj });
+    },
+    setDc: (obj) => {
+      dispatch({ type: "SET_DC", payload: obj });
     },
   };
 };

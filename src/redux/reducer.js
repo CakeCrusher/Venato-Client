@@ -60,7 +60,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         itemSelecting: state.itemSelecting.filter(
-          (item) => item.id !== action.payload.id,
+          (item) => item.id !== action.payload.id
         ),
       };
     case "EDIT_SELECTED_ITEM":
@@ -111,6 +111,11 @@ function reducer(state = initialState, action) {
           dailyConsumption: [...state.dailyConsumption, action.payload],
         };
       }
+    case "SET_DC":
+      return {
+        ...state,
+        dailyConsumption: action.payload,
+      };
 
     default:
       return state;
