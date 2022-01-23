@@ -32,20 +32,20 @@ function Home(props) {
     const lastWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 7,
+      today.getDate() - 7
     )
       .toISOString()
       .slice(0, 10);
     const tomrrow = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 1,
+      today.getDate() + 1
     )
       .toISOString()
       .slice(0, 10);
     console.log("lastWeek", lastWeek, lastWeek);
     console.log("tomrrow", tomrrow, lastWeek);
-    
+
     try {
       if (register) {
         const { data } = await createUser(username, password);
@@ -66,10 +66,7 @@ function Home(props) {
       } else {
         props.setMeals(meals.data.msg);
       }
-      const { user_id } = data.msg;
-      props.login({
-        id: user_id,
-      });
+
       navigate("/adding-groceries");
     } catch (err) {
       console.error(err);

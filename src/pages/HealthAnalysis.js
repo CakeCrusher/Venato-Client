@@ -18,22 +18,19 @@ import { geolocated } from "react-geolocated";
 import DailyConsumption from "../components/healthAnalysis/DailyConsumption";
 import Meal from "../components/healthAnalysis/Meal";
 import { lastWeek, today, tomrrow } from "../utils/tools";
+import ObesityAnalysis from "../components/healthAnalysis/ObesityAnalysis";
 
 const HealthAnalysis = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getDailyConsumption(data.msg.user_id, lastWeek, tomrrow).then((dc) => {
+    getDailyConsumption(props.userId, lastWeek, tomrrow).then((dc) => {
       props.setDc(dc.data.msg);
     });
-    getMeals(data.msg.user_id).then((meals) => {
+    getMeals(props.userId).then((meals) => {
       props.setMeals(meals.data.msg);
     });
-    getPrediction(
-      '[{"id":5,"amount_g":11000.0,"category":"BagelsandEnglishmuffins"},{"id":10,"amount_g":30.0,"category":"Candycontainingchocolate"},{"id":46,"amount_g":102.600003,"category":"Chickenwholepieces"},{"id":4,"amount_g":4.0,"category":"Coffee"},{"id":50,"amount_g":525.599976,"category":"Coldcutsandcuredmeats"},{"id":42,"amount_g":100.0,"category":"Creamandcreamsubstitutes"},{"id":52,"amount_g":262.799988,"category":"Notincludedinafoodcategory"},{"id":44,"amount_g":78.780003,"category":"Otherstarchyvegetables"},{"id":48,"amount_g":929.599976,"category":"Ricemixeddishes"}]'
-    ).then((res) => {
-      console.log("prediction", res.data);
-    });
+
     getMeals(props.userId).then((res) => {
       if (res.data) {
         // setMealData(res.data.msg);
@@ -50,6 +47,7 @@ const HealthAnalysis = (props) => {
   return (
     <Container>
       <Heading>Health Analysis</Heading>
+      {/* <ObesityAnalysis /> */}
       <Meal />
       <DailyConsumption />
     </Container>
