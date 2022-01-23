@@ -31,14 +31,14 @@ function Home(props) {
     const lastWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 7
+      today.getDate() - 7,
     )
       .toISOString()
       .slice(0, 10);
     const tomrrow = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 1
+      today.getDate() + 1,
     )
       .toISOString()
       .slice(0, 10);
@@ -51,9 +51,17 @@ function Home(props) {
 
       const { data } = await getUser(username, password);
       const dc = await getDailyConsumption(data.msg.user_id, lastWeek, tomrrow);
-      props.setDc(dc.data.msg);
+      if (typeof dc.data.msg === "string") {
+        props.setDc([]);
+      } else {
+        props.setDc(dc.data.msg);
+      }
       const meals = await getMeals(data.msg.user_id);
-      props.setMeals(meals.data.msg);
+      if (typeof dc.data.msg === "string") {
+        props.setMeals([]);
+      } else {
+        props.setMeals(meals.data.msg);
+      }
       const { user_id } = data.msg;
       props.login({
         id: user_id,
